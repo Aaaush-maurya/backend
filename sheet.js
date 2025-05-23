@@ -2,14 +2,23 @@ const { google } = require("googleapis");
 const keys = require("./credentials.json");
 require("dotenv").config();
 
-const auth = new google.auth.GoogleAuth({
-  credentials: keys,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-});
+// const auth = new google.auth.GoogleAuth({
+//   credentials: keys,
+//   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+// });
+
 
 const SHEET_ID = process.env.SHEET_ID;
 
 async function getSheetData() {
+  const credentials = JSON.parse(
+    Buffer.from(process.env.GOOGLE_CREDENTIALS_JSON, "base64").toString("utf8")
+  );
+
+  const auth = new google.auth.GoogleAuth({
+    credentials,
+    scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+  });
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
 
